@@ -1,4 +1,4 @@
-#include "../include/cidr.h"
+#include "../../include/cidr.h"
 #include <string.h>
 #include <stdlib.h>
 
