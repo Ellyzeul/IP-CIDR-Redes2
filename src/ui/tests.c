@@ -4,7 +4,7 @@
 
 
 void tests(void) {
-    IPv4* ip = allocIPv4(110, 40, 240, 16, 22);
+    IPv4* ip = allocIPv4("110.40.240.16/22");
 
     printf("%s.%s.%s.%s\n",
         ip->block[0],

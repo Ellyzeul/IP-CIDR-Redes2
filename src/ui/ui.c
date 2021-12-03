@@ -2,6 +2,7 @@
 #include "../../include/cidr.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 
 _Bool validateIp(const char* netIp) {
@@ -32,6 +33,24 @@ _Bool validateIp(const char* netIp) {
     return 1;                                           // Caso a execucao nao seja barrada em nenhuma restricao, entao um valor verdadeiro sera retornado
 }
 
+void displayIP(const IPv4* ip) {
+    printf("%d.%d.%d.%d", 
+        binToDecimal(ip->block[0]),
+        binToDecimal(ip->block[1]),
+        binToDecimal(ip->block[2]),
+        binToDecimal(ip->block[3])
+    );
+}
+
+void displayMask(const IPv4* ip) {
+    printf("%d.%d.%d.%d", 
+        binToDecimal(ip->mask[0]),
+        binToDecimal(ip->mask[1]),
+        binToDecimal(ip->mask[2]),
+        binToDecimal(ip->mask[3])
+    );
+}
+
 char* index() {
     // Funcao para ler um endereco IPv4, valida-lo e retornar a string com esse endereco
 
@@ -48,4 +67,43 @@ char* index() {
     } while((error = !validateIp(netIp)));
 
     return netIp;
+}
+
+void listNetInfo(const IPv4* ip) {
+    IPv4* display_ip;
+    printf("\nInformacoes do IP inserido");
+    int hostBits = getBitsForNet(ip);
+    char* netIp = getNetID(ip);
+
+
+    printf("\n\nIntervalo de hosts:\t");
+
+    display_ip = netFirstHost(netIp);
+    displayIP(display_ip);
+    printf(" ~ ");
+
+    display_ip = netLastHost(netIp, hostBits);
+    displayIP(display_ip);
+
+
+    printf("\nEndereco de broadcast:  ");
+    display_ip = netBroadcast(netIp, hostBits);
+    displayIP(display_ip);
+
+
+    printf("\nMascara da sub-rede:\t");
+    displayMask(ip);
+
+
+    printf("\nNotacao CIDR:\t\t");
+    printf("/%d", hostBits);
+
+
+    printf("\nID da rede:\t\t");
+    display_ip = allocIPv4(netIp);
+    displayIP(display_ip);
+
+
+    printf("\nNumero de hosts:\t");
+    printf("%d", totalHostsOfNet(ip));
 }

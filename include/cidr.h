@@ -10,7 +10,12 @@ typedef struct ip IPv4;
 int bitsForNHosts(const int hosts);
 char* decimalToBin(const int decimal);
 int binToDecimal(const char* binary);
-int netBitsOfMask(const IPv4* ipv4);
-IPv4* allocIPv4(const int byte1, const int byte2, const int byte3, const int byte4, const int netType);
+IPv4* allocIPv4(const char* netIp);
+int getBitsForNet(const IPv4* ip);
+char* getNetID(const IPv4* ip);
+IPv4* netFirstHost(const char* netIp);
+IPv4* netLastHost(const char* netIp, int hostBits);
+int totalHostsOfNet(const IPv4* ip);
+IPv4* netBroadcast(const char* netIp, int hostBits);
 
 #endif

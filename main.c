@@ -6,14 +6,14 @@
 
 int main(void) {
     int debug = 0;
-    IPv4* ipv4;
+    IPv4* ip;
     char* netIp;
 
+
+    ip = allocIPv4(index());
+
+    listNetInfo(ip);
+
     if(debug) tests();
-
-    netIp = index();
-
-    printf("%s", netIp);
-
     return 0;
 }
