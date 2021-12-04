@@ -113,33 +113,33 @@ char* getNetID(const IPv4* ip) {                            // Funcao para retor
     return netId;
 }
 
-IPv4* netFirstHost(const char* netIp) {
+IPv4* netFirstHost(const char* netIp) {                     // Funcao para retornar o primeiro IP utlizavel da rede
     IPv4* first = allocIPv4(netIp);
 
-    first->block[3][7] = '1';
+    first->block[3][7] = '1';                               // Atribuindo 1 ao bit mais a direita
 
     return first;
 }
 
-IPv4* netLastHost(const char* netIp, int hostBits) {
+IPv4* netLastHost(const char* netIp, int hostBits) {        // Funcao para retornar o ultimo IP utilizavel da rede
     IPv4* last = allocIPv4(netIp);
 
     for(int i = hostBits; i < 31; i++) {
-        last->block[i/8][i%8] = '1';
+        last->block[i/8][i%8] = '1';                        // Atribuindo 1 a todos os bits da porcao de host, exceto o ultimo
     }
 
     return last;
 }
 
-IPv4* netBroadcast(const char* netIp, int hostBits) {
-    IPv4* broadcast = netLastHost(netIp, hostBits);
+IPv4* netBroadcast(const char* netIp, int hostBits) {       // Funcao para retornar o IP de broadcast
+    IPv4* broadcast = netLastHost(netIp, hostBits);         // Pegando o ultimo endereco utilizavel da rede
 
-    broadcast->block[3][7] = '1';
+    broadcast->block[3][7] = '1';                           // Atribuindo 1 ao ultimo bit do endereco
 
     return broadcast;
 }
 
-IPv4* allocIPv4(const char* netIp) {
+IPv4* allocIPv4(const char* netIp) {                        // Funcao para alocar um IP a partir da string de entrada do usuario
     int i = 0, j = 0, mask, *bytes = calloc(5, sizeof(int));
     char ch;
     IPv4* ip = calloc(1, sizeof(IPv4));
@@ -148,38 +148,38 @@ IPv4* allocIPv4(const char* netIp) {
 
     while ((ch = *(netIp+(i++))) != '\0')
     {
-        if(ch == 46 || ch == 47) {
+        if(ch == 46 || ch == 47) {                          // Se encontrar '.' ou '/' pula para o proximo indice da string
             j++;
             continue;
         }
 
         bytes[j] *= 10;
-        bytes[j] += ch-48;
+        bytes[j] += ch-48;                                  // Convertendo caractere em ASCII em int
     }
 
-    for(i = 0; i < 4; i++) ip->block[i] = decimalToBin(bytes[i]);
+    for(i = 0; i < 4; i++) ip->block[i] = decimalToBin(bytes[i]);   // Convertendo numeros da string de entrada em binario
 
     mask = bytes[4];
     for(i = 0; i < 4; i++) {
         ip->mask[i] = calloc(9, sizeof(char));
         ip->mask[i][8] = '\0';
 
-        for(j = 0; j < 8; j++) ip->mask[i][j] = (mask-- > 0 ? '1' : '0');
+        for(j = 0; j < 8; j++) ip->mask[i][j] = (mask-- > 0 ? '1' : '0');   // Criando mascara a partir da notacao CIDR
     }
 
     return ip;
 }
 
-void changeMask(IPv4* ip, char* newMask) {
+void changeMask(IPv4* ip, char* newMask) {                      // Funcao para trocar a mascara do IP
     int index = 0, j = 0;
 
     for(int i = 0; i < 35; i++) {
-        if(newMask[i] == '.') {
+        if(newMask[i] == '.') {                                 // Se encontrar '.' pula para o proximo indice da mascara
             index++;
             j = 0;
             continue;
         }
 
-        ip->mask[index][j++] = newMask[i];
+        ip->mask[index][j++] = newMask[i];                      // Copiando bit da mascara para o IP
     }
 }
