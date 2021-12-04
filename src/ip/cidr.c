@@ -4,12 +4,29 @@
 #include <stdio.h>
 
 
-int bitsForNHosts(const int hosts) {
-    int i = 0, value = hosts;
+char* maskForNHosts(const int hosts) {
+    int i = 0, value = hosts, netBits, count = 0;
+    char* mask = calloc(36, sizeof(char));
 
     while((value*=2) < 256) i++;
 
-    return 8 - i;
+    netBits = 32 - (8 - i);
+    mask[35] = '\0';
+
+    i = 0;
+    while (i < 35)
+    {
+        if(count == 8) {
+            mask[i++] = '.';
+            count = 0;
+            continue;
+        }
+
+        mask[i++] = (netBits-- > 0 ? '1' : '0');
+        count++;
+    }
+    
+    return mask;
 }
 
 char* decimalToBin(const int decimal) {
@@ -152,4 +169,18 @@ IPv4* allocIPv4(const char* netIp) {
     }
 
     return ip;
+}
+
+void changeMask(IPv4* ip, char* newMask) {
+    int index = 0, j = 0;
+
+    for(int i = 0; i < 35; i++) {
+        if(newMask[i] == '.') {
+            index++;
+            j = 0;
+            continue;
+        }
+
+        ip->mask[index][j++] = newMask[i];
+    }
 }

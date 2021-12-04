@@ -51,7 +51,7 @@ void displayMask(const IPv4* ip) {
     );
 }
 
-char* index() {
+char* getIp(void) {
     // Funcao para ler um endereco IPv4, valida-lo e retornar a string com esse endereco
 
     char* netIp = calloc(19, sizeof(char));
@@ -69,9 +69,9 @@ char* index() {
     return netIp;
 }
 
-void listNetInfo(const IPv4* ip) {
+void listNetInfo(const IPv4* ip, const char* msg) {
     IPv4* display_ip;
-    printf("\nInformacoes do IP inserido");
+    printf("\n\n%s", msg);
     int hostBits = getBitsForNet(ip);
     char* netIp = getNetID(ip);
 

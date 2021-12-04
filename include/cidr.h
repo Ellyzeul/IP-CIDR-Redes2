@@ -7,7 +7,7 @@ struct ip {
 };
 typedef struct ip IPv4;
 
-int bitsForNHosts(const int hosts);
+char* maskForNHosts(const int hosts);
 char* decimalToBin(const int decimal);
 int binToDecimal(const char* binary);
 IPv4* allocIPv4(const char* netIp);
@@ -17,5 +17,6 @@ IPv4* netFirstHost(const char* netIp);
 IPv4* netLastHost(const char* netIp, int hostBits);
 int totalHostsOfNet(const IPv4* ip);
 IPv4* netBroadcast(const char* netIp, int hostBits);
+void changeMask(IPv4* ip, char* newMask);
 
 #endif

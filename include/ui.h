@@ -3,7 +3,7 @@
 
 #include "cidr.h"
 
-char* index();
-void listNetInfo(const IPv4* ip);
+char* getIp(void);
+void listNetInfo(const IPv4* ip, const char* msg);
 
 #endif
