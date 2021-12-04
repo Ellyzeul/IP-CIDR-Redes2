@@ -4,25 +4,25 @@
 #include <stdio.h>
 
 
-char* maskForNHosts(const int hosts) {
+char* maskForNHosts(const int hosts) {                      // Funcao para obter a mascara a partir do numero de hosts desejados
     int i = 0, value = hosts, netBits, count = 0;
     char* mask = calloc(36, sizeof(char));
 
-    while((value*=2) < 256) i++;
+    while((value*=2) < 256) i++;                            // Total de bits nao utlizados no ultimo octeto para o numero de hosts
 
-    netBits = 32 - (8 - i);
+    netBits = 32 - (8 - i);                                 // Total de bits 1 na mascara
     mask[35] = '\0';
 
     i = 0;
     while (i < 35)
     {
         if(count == 8) {
-            mask[i++] = '.';
+            mask[i++] = '.';                                // Colocando '.' a cada octeto na string
             count = 0;
             continue;
         }
 
-        mask[i++] = (netBits-- > 0 ? '1' : '0');
+        mask[i++] = (netBits-- > 0 ? '1' : '0');            // Colocando netBits de 1 na mascara e preenchendo restante com 0
         count++;
     }
     
@@ -36,7 +36,7 @@ char* decimalToBin(const int decimal) {
     bin = calloc(9, sizeof(char));
     *(bin+8) = '\0';
     for(int i = 7; i >= 0; i--) {
-        *(bin+i) = (actual % 2) + 48;
+        *(bin+i) = (actual % 2) + 48;                       // Pegando resto da divisão por 2 como e o algoritmo de conversao decimal -> binario
         actual /= 2;
     }
 
@@ -47,19 +47,19 @@ int binToDecimal(const char* binary) {
     int dec = 0, mul = 1;
 
     for(int i = 7; i >= 0; i--) {
-        dec += (*(binary+i) - 48) * mul;
+        dec += (*(binary+i) - 48) * mul;                    // Pegando multiplicacao por 2^n como e o algoritmo de conversao binario -> decimal
         mul *= 2;
     }
 
     return dec;
 }
 
-int getBitsForNet(const IPv4* ip) {
+int getBitsForNet(const IPv4* ip) {                         // Funcao para retornar o total de bits da porcao de rede do IP
     int bits = 0;
 
     for(int i = 0; i < 4; i++) {
         for(int j = 0; j < 8; j++) {
-            if(ip->mask[i][j] == '0') return bits;
+            if(ip->mask[i][j] == '0') return bits;          // Contando bits 1 da mascara
 
             bits++;
         }
@@ -68,31 +68,31 @@ int getBitsForNet(const IPv4* ip) {
     return bits;
 }
 
-int totalHostsOfNet(const IPv4* ip) {
+int totalHostsOfNet(const IPv4* ip) {                       // Funcao para retornar total de hosts utilizaveis da rede
     int hostsBits = 32 - getBitsForNet(ip), hosts = 1;
 
-    while (hostsBits-- > 0) hosts *= 2;
-    hosts -= 2;
+    while (hostsBits-- > 0) hosts *= 2;                     // Realizando o calculo 2^n para o total de hosts
+    hosts -= 2;                                             // 2^n - 2 para total de hosts utilizaveis
 
     return hosts;
 }
 
-char* getNetID(const IPv4* ip) {
+char* getNetID(const IPv4* ip) {                            // Funcao para retornar o IP base da rede
     int hostBits = 32 - getBitsForNet(ip), bytes[4], chars = 3, aux, index = 0;
     char byte[8], *netId, *byteStr;
 
-    for(int i = 3; i >= 0; i--) {
+    for(int i = 3; i >= 0; i--) {                           // Passeia pelos 4 octetos do bloco de endereco de tras pra frente
         strcpy(byte, ip->block[i]);
 
-        for(int j = 7; j >= 0 && hostBits > 0; j--) {
-            byte[j] = '0';
+        for(int j = 7; j >= 0 && hostBits > 0; j--) {       // Passeia pelos 8 bits do octeto de tras pra frente
+            byte[j] = '0';                                  // Atribui bits 0 de tras pra frente para obter o endereco base da rede
             hostBits--;
         }
 
-        bytes[i] = binToDecimal(byte);
+        bytes[i] = binToDecimal(byte);                      // Convertendo byte para decimal
     }
 
-    for(int i = 0; i < 4; i++) {
+    for(int i = 0; i < 4; i++) {                            // Verifica o total de caracteres que a string resultante deve alocar para comportar o novo endereco
         aux = bytes[i];
         do {
             chars++;
@@ -100,16 +100,15 @@ char* getNetID(const IPv4* ip) {
         } while(aux != 0);
     }
 
-    netId = calloc(chars+1, sizeof(char));
+    netId = calloc(chars+1, sizeof(char));                  // Alocando string resultante
     netId[chars] = '\0';
 
-    for(int i = 0; i < 4; i++) {
-        itoa(bytes[i], byteStr, 10);
-
-        for(int j = 0; byteStr[j] != '\0'; j++) netId[index++] = byteStr[j];
-
-        if(i < 3) netId[index++] = '.';
-    }
+    sprintf(netId, "%d.%d.%d.%d",                           // Escrevendo bytes decimais na string resultante
+        bytes[0],
+        bytes[1],
+        bytes[2],
+        bytes[3]
+    );
 
     return netId;
 }
