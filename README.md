@@ -45,8 +45,8 @@ gcc obj/cidr.o obj/tests.o obj/ui.o main.c -o IPv4Calc -pedantic -O3 -Wall
 
 Esse projeto gera um programa bem simples. Ao inicializá-lo o programa irá esperar pelo usuário inserir um IPv4 válido.
 
-![Tela de inserção do IP](https://raw.githubusercontent.com/Ellyzeul/IP-CIDR-Redes2/main/ipv4_1.jpg)
+![Tela de inserção do IP](https://raw.githubusercontent.com/Ellyzeul/IP-CIDR-Redes2/main/.github/images/ipv4_1.jpg)
 
 Assim que o IP for inserido o programa listará as informações daquele IP com a máscara fornecida. Também listará as informações testando outras máscaras, no caso, máscaras que permitam 128 hosts, 57 hosts, 32 hosts, 180 hosts e 10 hosts respectivamente.
 
-![Informações do IP inserido](https://raw.githubusercontent.com/Ellyzeul/IP-CIDR-Redes2/main/ipv4_2.jpg)
+![Informações do IP inserido](https://raw.githubusercontent.com/Ellyzeul/IP-CIDR-Redes2/main/.github/images/ipv4_2.jpg)
